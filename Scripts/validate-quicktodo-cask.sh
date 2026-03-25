@@ -8,12 +8,14 @@ APP_NAME="${3:-QuickTodo}"
 TAP_NAME="${4:-turastory/local-tap}"
 APP_PATH="/Applications/$APP_NAME.app"
 PLIST_PATH="$APP_PATH/Contents/Info.plist"
+TAP_OWNER="${TAP_NAME%%/*}"
+TAP_REPO_SUFFIX="${TAP_NAME#*/}"
+TAP_DIR="$(brew --repository)/Library/Taps/$TAP_OWNER/homebrew-$TAP_REPO_SUFFIX"
 FULL_CASK_NAME="$TAP_NAME/$CASK_TOKEN"
 
 cleanup() {
-  brew uninstall --cask --force "$FULL_CASK_NAME" >/dev/null 2>&1 || true
   brew uninstall --cask --force "$CASK_TOKEN" >/dev/null 2>&1 || true
-  brew untap "$TAP_NAME" >/dev/null 2>&1 || true
+  rm -rf "$TAP_DIR"
 }
 trap cleanup EXIT
 
@@ -24,8 +26,10 @@ if [[ -z "$EXPECTED_VERSION" ]]; then
   exit 1
 fi
 
-brew untap "$TAP_NAME" >/dev/null 2>&1 || true
-brew tap --custom-remote "$TAP_NAME" "$ROOT_DIR"
+rm -rf "$TAP_DIR"
+mkdir -p "$TAP_DIR/Casks"
+cp "$CASK_PATH" "$TAP_DIR/Casks/$CASK_TOKEN.rb"
+
 brew audit --cask --online "$FULL_CASK_NAME"
 brew reinstall --cask --require-sha "$FULL_CASK_NAME"
 
