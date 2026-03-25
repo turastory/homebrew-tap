@@ -13,5 +13,7 @@ brew install --cask quicktodo
 
 - `Casks/*.rb`: macOS app casks
 - `Formula/*.rb`: CLI/package formulas if needed later
+- `Scripts/*.sh`: cask 생성/검증 스크립트
+- `.github/workflows/*`: cask 검증과 자동 publish workflow
 
-QuickTodo cask will be published here after the first GitHub release asset is available.
+QuickTodo cask is generated from `turastory/quicktodo` releases and validated in CI before or while it is published.

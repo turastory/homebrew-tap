@@ -1,0 +1,35 @@
+name: validate-quicktodo-cask
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Casks/quicktodo.rb"
+      - "Scripts/render-quicktodo-cask.sh"
+      - "Scripts/validate-quicktodo-cask.sh"
+      - ".github/workflows/validate-quicktodo-cask.yml"
+      - ".github/workflows/publish-quicktodo-cask.yml"
+  pull_request:
+    paths:
+      - "Casks/quicktodo.rb"
+      - "Scripts/render-quicktodo-cask.sh"
+      - "Scripts/validate-quicktodo-cask.sh"
+      - ".github/workflows/validate-quicktodo-cask.yml"
+      - ".github/workflows/publish-quicktodo-cask.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: macos-15
+    env:
+      HOMEBREW_DEVELOPER: 1
+      HOMEBREW_NO_INSTALL_FROM_API: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate quicktodo cask
+        run: |
+          chmod +x Scripts/validate-quicktodo-cask.sh
+          Scripts/validate-quicktodo-cask.sh

@@ -1,0 +1,54 @@
+name: publish-quicktodo-cask
+
+on:
+  repository_dispatch:
+    types:
+      - quicktodo_release_published
+
+concurrency:
+  group: publish-quicktodo-cask
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: macos-15
+    permissions:
+      contents: write
+    env:
+      HOMEBREW_DEVELOPER: 1
+      HOMEBREW_NO_INSTALL_FROM_API: 1
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Render quicktodo cask
+        run: |
+          chmod +x Scripts/render-quicktodo-cask.sh
+          Scripts/render-quicktodo-cask.sh \
+            "${{ github.event.client_payload.version }}" \
+            "${{ github.event.client_payload.sha256 }}" \
+            "${{ github.event.client_payload.release_tag }}" \
+            "${{ github.event.client_payload.app_repo }}" \
+            "${{ github.event.client_payload.app_name }}" \
+            "${{ github.event.client_payload.cask_token }}" \
+            "${{ github.event.client_payload.min_macos }}"
+
+      - name: Validate quicktodo cask
+        run: |
+          chmod +x Scripts/validate-quicktodo-cask.sh
+          Scripts/validate-quicktodo-cask.sh
+
+      - name: Commit and push cask update
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add Casks/quicktodo.rb
+
+          if git diff --cached --quiet; then
+            echo "No cask changes to commit."
+            exit 0
+          fi
+
+          git commit -m "Update quicktodo to ${{ github.event.client_payload.version }}"
+          git pull --rebase origin main
+          git push origin HEAD:main

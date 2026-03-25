@@ -7,5 +7,17 @@ cask "quicktodo" do
   desc "Single-file Markdown todo panel for macOS"
   homepage "https://github.com/turastory/quicktodo"
 
+  livecheck do
+    url "https://github.com/turastory/quicktodo"
+    strategy :github_latest
+  end
+
+  depends_on macos: ">= :ventura"
+
   app "QuickTodo.app"
+
+  zap trash: [
+    "~/Library/Preferences/com.turastory.quicktodo.plist",
+    "~/Library/Saved Application State/com.turastory.quicktodo.savedState",
+  ]
 end
