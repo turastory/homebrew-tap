@@ -1,0 +1,36 @@
+name: validate-qc-formula
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - "Formula/qc.rb"
+      - "Scripts/render-qc-formula.sh"
+      - "Scripts/validate-qc-formula.sh"
+      - ".github/workflows/publish-qc-formula.yml"
+      - ".github/workflows/validate-qc-formula.yml"
+  pull_request:
+    paths:
+      - "Formula/qc.rb"
+      - "Scripts/render-qc-formula.sh"
+      - "Scripts/validate-qc-formula.sh"
+      - ".github/workflows/publish-qc-formula.yml"
+      - ".github/workflows/validate-qc-formula.yml"
+  workflow_dispatch:
+
+jobs:
+  validate:
+    runs-on: macos-15
+    env:
+      HOMEBREW_DEVELOPER: 1
+      HOMEBREW_NO_INSTALL_FROM_API: 1
+      HOMEBREW_GITHUB_API_TOKEN: ${{ github.token }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Validate qc formula
+        run: |
+          chmod +x Scripts/validate-qc-formula.sh
+          Scripts/validate-qc-formula.sh
