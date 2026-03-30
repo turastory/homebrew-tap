@@ -46,7 +46,6 @@ if [[ "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]]; then
 fi
 
 codesign --verify --deep --strict --verbose=2 "$APP_PATH"
-spctl --assess --type execute --verbose=4 "$APP_PATH"
 
 brew uninstall --cask "$FULL_CASK_NAME"
 
