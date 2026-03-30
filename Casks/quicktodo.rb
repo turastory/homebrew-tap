@@ -1,6 +1,6 @@
 cask "quicktodo" do
-  version "0.1.7"
-  sha256 "a9ec5b773dd7cf0ac9b73858e588be0f949a1b4f19b85f42a3f10b9cad595ed0"
+  version "0.1.8"
+  sha256 "a31f6943a10f42f7f32190281ebd493991f461e1e320f6594a16ab6dc7fc1fff"
 
   url "https://github.com/turastory/quicktodo/releases/download/v#{version}/QuickTodo.zip"
   name "QuickTodo"
